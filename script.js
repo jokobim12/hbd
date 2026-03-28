@@ -212,11 +212,11 @@ const dialogData = [
       },
       {
         text: "DM Instagram Aku",
-        link: "https://instagram.com/errr.ynn",
+        link: "https://instagram.com/@errr.ynn",
       },
       {
         text: "Atau Mau Main Api TikTok",
-        link: "https://tiktok.com/paa_a__",
+        link: "https://tiktok.com/@paa_a__",
       },
     ],
   },
