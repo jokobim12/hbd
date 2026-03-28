@@ -216,7 +216,7 @@ const dialogData = [
       },
       {
         text: "Atau Mau Main Api TikTok",
-        link: "https://tiktok.com/paa_a",
+        link: "https://tiktok.com/paa_a__",
       },
     ],
   },
