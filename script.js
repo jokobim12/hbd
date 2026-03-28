@@ -32,8 +32,7 @@ const romanticMessages = [
   "Hari ini berat? Yaudah besok coba lagi. klo besok berat, coba lagi kebesokannya ",
   "Kamu layak buat bahagia. Serius inii.",
   "Jangan terlalu keras sama diri sendiri.",
-  "Proses kamu valid. Gak usah bandingin sama orang.",
-  "aku bangga sama kamu, beneran.",
+  "Gak usah bandingin sama orang.",
 ];
 
 /**
@@ -60,7 +59,7 @@ const romanticMessages = [
 const dialogData = [
   // --- Pembuka ---
   {
-    text: "Haii aku bima, karakter 2d yang dikirim seseorang dari masa depan",
+    text: "Haii kamu Erfa yaa? salam kenal, aku Farah Karakter dari masa depan yang dikirim seseorang untuk kamu",
     expression: "happy",
   },
   {
@@ -68,7 +67,7 @@ const dialogData = [
     expression: "normal",
   },
   {
-    text: "Tapi sebelum itu, jawab dulu. Jujur dulu aja yaa.",
+    text: "Tapi sebelum itu, jawab dulu. beberapa pertanyaan yang bakal ku kasih.",
     expression: "normal",
   },
 
@@ -153,7 +152,7 @@ const dialogData = [
     choices: [
       {
         text: "Biasa aja, gak ada yang spesial",
-        response: "Salah. Orang yang \"biasa aja\" setiap orang ada kelebihannya masing-masing, dan harusnya kamu ada itu. coba cari",
+        response: "Salah. Kamu itu \"Spesial\" buat orang-orang yang perlu kamu. angjayy kelasss ",
         expression: "happy",
       },
       {
@@ -175,21 +174,51 @@ const dialogData = [
     expression: "happy",
   },
   {
-    text: "Intinya, aku cuma mau bilang: makasih udah jadi temen yang baik.",
+    text: "Intinya, aku cuma mau bilang: jan sedih-sedih mulu, dimasa depan lo ga semenyedihkan ituu 🙂‍↕️",
     expression: "normal",
   },
   {
-    text: "Kamu boleh capek, boleh nangis, boleh ngeluh. Tapi jangan lupa, ada orang yang peduli sama kamu.",
+    text: "Kamu boleh capek, boleh nangis, boleh ngeluh. Tapi jangan lupa, kamu harus begoyang juga biar santaii 🤭.",
     expression: "normal",
   },
   {
-    text: "Dan hari ini, ada sesuatu hal kecil aja sih yang mau aku kasih ke kamu...",
+    text: "Oh iya kamu ulang tahun yaa. selamat ulang tahun yaaa...🙂‍↕️",
     expression: "happy",
   },
   {
-    text: "Siap ya?",
+    text: "Hepi Bes Dayyyy....😙🥳",
     expression: "happy",
-    isLast: true,
+  },
+  {
+    text: "Selamat Ulang Tahun yaa! Semoga panjang umur, sehat selalu, dan semua yang kamu semogakan bisa tercapai di tahun ini.",
+    expression: "happy",
+    triggerConfetti: true,
+  },
+  {
+    text: "Dari temen yang kadang nyebelin, dan akan tetap nyebelin sampai kapanpun ituu 😋.",
+    expression: "happy",
+  },
+  {
+    text: "Ehh tunggu, sebelum aku pergi...",
+    expression: "normal",
+  },
+  {
+    text: "Kamu ada yang mau ditanyain atau mau ngobrol lebih lanjut gak?",
+    expression: "normal",
+    choices: [
+      {
+        text: "Chat WA Aku",
+        link: "https://wa.me/6283112294396",
+      },
+      {
+        text: "DM Instagram Aku",
+        link: "https://instagram.com/jokobim12",
+      },
+      {
+        text: "Atau Mau Main Api TikTok",
+        link: "https://tiktok.com/@jokobimmm12",
+      },
+    ],
   },
 ];
 
@@ -270,6 +299,10 @@ function showDialog(data) {
   const expr = data.expression || 'normal';
   $charImg.src = CHARACTERS[expr] || CHARACTERS.normal;
 
+  if (data.triggerConfetti) {
+    launchConfetti();
+  }
+
   // Hide choices & next button
   $choices.classList.add('hidden');
   $choices.innerHTML = '';
@@ -287,6 +320,35 @@ function showDialog(data) {
 }
 
 // ============================================================
+//  TYPING SOUND EFFECT (Web Audio API — no file needed)
+// ============================================================
+let typingAudioCtx = null;
+
+function playTypingSound() {
+  try {
+    if (!typingAudioCtx) {
+      typingAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = typingAudioCtx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    // Low frequency + quick pitch drop = soft "blup" sound
+    const baseFreq = 280 + Math.random() * 40;
+    osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, ctx.currentTime + 0.08);
+
+    gain.gain.setValueAtTime(0.45, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  } catch (e) { /* silently fail */ }
+}
+
+// ============================================================
 //  TYPING EFFECT
 // ============================================================
 function typeText(text, onComplete) {
@@ -299,6 +361,10 @@ function typeText(text, onComplete) {
   function typeChar() {
     if (i < text.length) {
       $dialogText.innerHTML = text.substring(0, i + 1) + '<span class="typing-cursor"></span>';
+      // Play sound for non-space characters
+      if (text[i] !== ' ') {
+        playTypingSound();
+      }
       i++;
       typingTimeout = setTimeout(typeChar, TYPING_SPEED);
     } else {
@@ -317,6 +383,7 @@ document.querySelector('.dialog-box')?.addEventListener('click', (e) => {
     clearTimeout(typingTimeout);
     $dialogText.innerHTML = currentFullText;
     isTyping = false;
+    
     // Jangan tampilkan choices lagi kalau sedang menampilkan response
     if (isShowingResponse) {
       $nextBtn.classList.remove('hidden');
@@ -352,6 +419,12 @@ function showChoices(choices) {
 //  HANDLE CHOICE
 // ============================================================
 function handleChoice(choice) {
+  // If the choice is a link, open it and don't continue dialogue
+  if (choice.link) {
+    window.open(choice.link, '_blank');
+    return;
+  }
+
   $choices.classList.add('hidden');
   isShowingResponse = true; // tandai sedang response
 
@@ -361,13 +434,7 @@ function handleChoice(choice) {
 
   // Type the response
   typeText(choice.response, () => {
-    // If this was the last dialog, show ending
-    const data = dialogData[currentDialogIndex];
-    if (data.isLast) {
-      setTimeout(() => goToEnding(), 1500);
-    } else {
-      $nextBtn.classList.remove('hidden');
-    }
+    $nextBtn.classList.remove('hidden');
   });
 }
 
@@ -376,104 +443,18 @@ function handleChoice(choice) {
 // ============================================================
 function nextDialog() {
   currentDialogIndex++;
+  
+  // Kalau sudah mentok di array terakhir, jangan lakukan apa-apa
   if (currentDialogIndex >= dialogData.length) {
-    goToEnding();
+    currentDialogIndex = dialogData.length - 1;
     return;
   }
 
   const data = dialogData[currentDialogIndex];
-
-  // Check if this is the last dialog
-  if (data.isLast) {
-    showDialog(data);
-    // After showing last dialog, auto-advance to ending
-    // (but only after typing finishes, handled in typeText callback)
-    const origShow = showDialog;
-    $nextBtn.classList.add('hidden');
-    typeText(data.text, () => {
-      if (data.expression) {
-        $charImg.src = CHARACTERS[data.expression] || CHARACTERS.normal;
-      }
-      setTimeout(() => goToEnding(), 1800);
-    });
-    if (data.expression) {
-      $charImg.src = CHARACTERS[data.expression] || CHARACTERS.normal;
-    }
-    return;
-  }
-
   showDialog(data);
 }
 
-// ============================================================
-//  GO TO ENDING — cinematic staged reveal
-// ============================================================
 
-// === PESAN ENDING — edit di sini ===
-const endingMessages = [
-  "Makasih ya udah inget hari ini.",
-  "Makasih juga udah ngasih semangat selama ini.",
-  "Semoga tahun ini lebih baik dari kemarin.",
-  "Dan semoga kita tetep jadi temen yang baik. ❤️",
-];
-
-function goToEnding() {
-  switchScene($vn, $ending);
-  document.body.classList.add('ending-active');
-  startMusic();
-  setTimeout(() => playEndingSequence(), 600);
-}
-
-function playEndingSequence() {
-  // 1. Title fade in
-  setTimeout(() => {
-    const title = document.getElementById('endingTitle');
-    if (title) title.style.opacity = '1';
-  }, 300);
-
-  // 2. Subtitle
-  setTimeout(() => {
-    const sub = document.getElementById('endingSubtitle');
-    if (sub) sub.style.opacity = '1';
-  }, 900);
-
-  // 3. Confetti
-  setTimeout(() => launchConfetti(), 500);
-
-  // 4. Character
-  setTimeout(() => {
-    const charC = document.getElementById('endingCharContainer');
-    if (charC) charC.style.opacity = '1';
-  }, 1400);
-
-  // 5. Message cards one by one
-  setTimeout(() => showEndingMessages(), 2000);
-
-  // 6. Restart button
-  setTimeout(() => {
-    const btn = document.getElementById('endingRestartBtn');
-    if (btn) btn.style.opacity = '1';
-  }, 2000 + endingMessages.length * 500 + 600);
-}
-
-// ============================================================
-//  ENDING MESSAGE CARDS
-// ============================================================
-function showEndingMessages() {
-  const container = document.getElementById('endingMessages');
-  if (!container) return;
-  container.innerHTML = '';
-
-  endingMessages.forEach((msg, i) => {
-    setTimeout(() => {
-      const card = document.createElement('div');
-      card.className = 'msg-card rounded-xl px-4 py-3 sm:px-5 sm:py-4 opacity-0';
-      card.style.animation = 'fadeInUp 0.5s ease-out forwards';
-      card.innerHTML = `<p class="text-gray-600 text-sm sm:text-base font-body">${msg}</p>`;
-      container.appendChild(card);
-    }, i * 500);
-  });
-}
 
 // ============================================================
 //  CONFETTI 🎉
@@ -536,7 +517,7 @@ let musicStarted = false;
 
 function startMusic() {
   if (!musicStarted && $music) {
-    $music.volume = 0.4;
+    $music.volume = 0.2;
     $music.play().then(() => {
       musicStarted = true;
     }).catch(() => {});
@@ -549,27 +530,9 @@ document.addEventListener('click', function firstClick() {
   document.removeEventListener('click', firstClick);
 }, { once: true });
 
-// ============================================================
-//  RESTART
-// ============================================================
-function restartGame() {
-  currentDialogIndex = 0;
 
-  const title = document.getElementById('endingTitle');
-  const sub   = document.getElementById('endingSubtitle');
-  const charC = document.getElementById('endingCharContainer');
-  const btn   = document.getElementById('endingRestartBtn');
-  const msgs  = document.getElementById('endingMessages');
 
-  if (title) title.style.opacity = '0';
-  if (sub)   sub.style.opacity   = '0';
-  if (charC) charC.style.opacity = '0';
-  if (btn)   btn.style.opacity   = '0';
-  if (msgs)  msgs.innerHTML      = '';
 
-  document.body.classList.remove('ending-active');
-  switchScene($ending, $opening);
-}
 
 // ============================================================
 //  KEYBOARD SUPPORT
@@ -588,6 +551,7 @@ document.addEventListener('keydown', (e) => {
       clearTimeout(typingTimeout);
       $dialogText.innerHTML = currentFullText;
       isTyping = false;
+
       if (isShowingResponse) {
         $nextBtn.classList.remove('hidden');
       } else {
