@@ -115,12 +115,12 @@ const dialogData = [
     choices: [
       {
         text: "Masalah keluarga",
-        response: "Keluarga emang ribet. Kadang orang terdekat itu malah yang paling susah dimengerti dan yang bikin jengkel bangett jujut. Tapi bawa santai aja",
+        response: "Keluarga emang ribet. Kadang orang terdekat itu malah yang paling ngerusak suasana hati sii dan yang bikin jengkel bangett jujur. Tapi bawa santai aja",
         expression: "normal",
       },
       {
-        text: "Urusan perasaan",
-        response: "Perasaan emang gak bisa di paksa sih. tapi mending gosah mikirin cinta-cintaan dulu klo kataku mah. fokus kuliah aja siapa tau nanti dapet cowo yang josjiss",
+        text: "Urusan Percintaan",
+        response: "Klo urusan perasaan hati emang gak bisa di paksa sih. tapi mending gosah mikirin cinta-cintaan dulu klo kataku mah. fokus kuliah aja siapa tau nanti dapet cowo yang josjiss",
         expression: "normal",
       },
       {
@@ -137,11 +137,11 @@ const dialogData = [
     expression: "normal",
   },
   {
-    text: "tapi yang aku pasti tau itu, kamu masih hidup sampe sekarang sudah termasuk josjiss ko",
+    text: "tapi yang aku pasti tau itu, kamu masih kuat sampe sekarang sudah termasuk josjiss ko",
     expression: "normal",
   },
   {
-    text: "Itu udah cukup hebat. Mainnya hebat",
+    text: "Itu udah cukup hebat siii....",
     expression: "happy",
   },
 
@@ -156,8 +156,8 @@ const dialogData = [
         expression: "happy",
       },
       {
-        text: "Berantakan",
-        response: "Susun lagi dongg. buat rencana masa depan dengan rapi biar gak berantakan lagii",
+        text: "Agak Berantakan",
+        response: "Sebenernya klo masalah itu, jangan yang terlalu dipikirin siii. klo kita santai-santai aja nikmatin hidup, ngelakuin hal-hal yang kita sukai tanpa meduliin seberapa berantakan hidup, nanti bakal ga kerasa koo...",
         expression: "normal",
       },
       {
@@ -174,11 +174,11 @@ const dialogData = [
     expression: "happy",
   },
   {
-    text: "Intinya, aku cuma mau bilang: jan sedih-sedih mulu, dimasa depan lo ga semenyedihkan ituu 🙂‍↕️",
+    text: "Intinya, aku cuma mau bilang: jan sedih-sedih mulu, dimasa depan kamu ga semenyedihkan ituu 🙂‍↕️",
     expression: "normal",
   },
   {
-    text: "Kamu boleh capek, boleh nangis, boleh ngeluh. Tapi jangan lupa, kamu harus begoyang juga biar santaii 🤭.",
+    text: "Kamu boleh capek, boleh nangis, boleh ngeluh. Tapi jangan lupa makan 🤭.",
     expression: "normal",
   },
   {
@@ -190,7 +190,7 @@ const dialogData = [
     expression: "happy",
   },
   {
-    text: "Selamat Ulang Tahun yaa! Semoga panjang umur, sehat selalu, dan semua yang kamu semogakan bisa tercapai di tahun ini.",
+    text: "Selamat Ulang Tahun yaa! Semoga panjang umur, sehat selalu, dan semua yang kamu semogakan bisa tercapai di tahun ini. gada kado siii, hehe",
     expression: "happy",
     triggerConfetti: true,
   },
@@ -208,15 +208,15 @@ const dialogData = [
     choices: [
       {
         text: "Chat WA Aku",
-        link: "https://wa.me/6283112294396",
+        link: "https://wa.me/6282252359194",
       },
       {
         text: "DM Instagram Aku",
-        link: "https://instagram.com/jokobim12",
+        link: "https://instagram.com/errr.ynn",
       },
       {
         text: "Atau Mau Main Api TikTok",
-        link: "https://tiktok.com/@jokobimmm12",
+        link: "https://tiktok.com/paa_a",
       },
     ],
   },
