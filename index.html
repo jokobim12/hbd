@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🎂 Happy Birthday!</title>
+  <meta name="description" content="Sebuah hadiah ulang tahun spesial untukmu 🎁" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rose:    { 50:'#fff1f2',100:'#ffe4e6',200:'#fecdd3',300:'#fda4af',400:'#fb7185',500:'#f43f5e' },
+            blush:   { 50:'#fdf2f8',100:'#fce7f3',200:'#fbcfe8',300:'#f9a8d4',400:'#f472b6',500:'#ec4899' },
+            violet:  { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6' },
+            cream:   '#fef6f0',
+          },
+          fontFamily: {
+            display: ['"Quicksand"', 'sans-serif'],
+            body:    ['"Nunito"', 'sans-serif'],
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%':      { transform: 'translateY(-12px)' },
+            },
+            fadeInUp: {
+              '0%':   { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%':   { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            scaleIn: {
+              '0%':   { opacity: '0', transform: 'scale(0.8)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            },
+            heartPop: {
+              '0%':   { transform: 'scale(0) translateY(0)', opacity: '1' },
+              '50%':  { transform: 'scale(1.2) translateY(-30px)', opacity: '1' },
+              '100%': { transform: 'scale(0.8) translateY(-80px)', opacity: '0' },
+            },
+            confettiFall: {
+              '0%':   { transform: 'translateY(-10vh) rotate(0deg)', opacity: '1' },
+              '100%': { transform: 'translateY(110vh) rotate(720deg)', opacity: '0' },
+            },
+            pulse: {
+              '0%, 100%': { opacity: '1' },
+              '50%':      { opacity: '.6' },
+            },
+            bounce: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%':      { transform: 'translateY(-8px)' },
+            },
+          },
+          animation: {
+            float:       'float 3s ease-in-out infinite',
+            fadeInUp:    'fadeInUp 0.8s ease-out forwards',
+            fadeIn:      'fadeIn 0.6s ease-out forwards',
+            scaleIn:     'scaleIn 0.5s ease-out forwards',
+            heartPop:    'heartPop 1s ease-out forwards',
+            confettiFall:'confettiFall 3s ease-in-out forwards',
+            pulse:       'pulse 2s ease-in-out infinite',
+            bounce:      'bounce 1s ease-in-out infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fdf2f8, #fef6f0, #f5f3ff);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    /* Allow scrolling on ending scene */
+    body.ending-active { overflow-y: auto; }
+
+    /* Typing cursor */
+    .typing-cursor {
+      display: inline-block; width: 2px; height: 1.1em;
+      background: #ec4899; margin-left: 2px;
+      animation: blink 0.7s step-end infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Scenes */
+    .scene {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      opacity: 0; pointer-events: none; transform: scale(0.97);
+    }
+    /* Ending scene needs to scroll */
+    #scene-ending {
+      position: fixed; inset: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .scene.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+
+    /* Character */
+    .character-img {
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 20px 30px rgba(236,72,153,0.2));
+      transition: transform 0.3s ease;
+    }
+
+    /* Dialog glass */
+    .dialog-box {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(251,207,232,0.6);
+    }
+
+    /* Choice buttons */
+    .choice-btn {
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .choice-btn::before {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(251,113,133,0.15), rgba(196,181,253,0.15));
+      opacity:0; transition: opacity 0.3s ease;
+    }
+    .choice-btn:hover::before { opacity:1; }
+    .choice-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(236,72,153,0.25);
+    }
+
+    .heart-float { position:fixed; pointer-events:none; font-size:1.5rem; z-index:100; }
+    .confetti { position:fixed; top:-10px; z-index:200; border-radius:2px; }
+    .petal { position:fixed; pointer-events:none; opacity:0.4; z-index:0; font-size:1.2rem; }
+    .next-btn { animation: pulse 2s ease-in-out infinite; }
+    #heartBtn { transition: transform 0.15s ease; }
+    #heartBtn:active { transform: scale(0.85); }
+
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:#fda4af; border-radius:10px; }
+
+    /* ======================== ENDING SCENE STYLES ======================== */
+
+    /* Ending uses same pastel bg */
+    #scene-ending.active {
+      background: linear-gradient(135deg, #fdf2f8, #fef6f0, #f5f3ff);
+    }
+
+    /* Message cards — glassmorphism */
+    .msg-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(251,207,232,0.5);
+      transition: all 0.4s ease;
+      cursor: default;
+    }
+    .msg-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(236,72,153,0.15);
+    }
+
+    /* Mobile adjustments */
+    @media (max-height: 700px) {
+      .dialog-box { padding: 1rem !important; }
+      .character-img { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="font-body">
+
+  <!-- === GANTI MUSIK: ubah src audio di bawah ini === -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="./music/bgm.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- ======================== FLOATING PETALS BG ======================== -->
+  <div id="petalsContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- ======================== SCENE 1: OPENING ======================== -->
+  <section id="scene-opening" class="scene active">
+    <div class="text-center px-6 relative z-10">
+      <div class="text-6xl sm:text-7xl mb-6 animate-bounce">🎁</div>
+
+      <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-400 to-violet-400 mb-4 animate-fadeInUp">
+        Hai, ada yang mau<br/>ngobrol sama kamu
+      </h1>
+
+      <p class="text-pink-400 text-base sm:text-lg mb-8 sm:mb-10 animate-fadeInUp" style="animation-delay: 0.3s; opacity:0;">
+        Tenang, cuma bentar kok.
+      </p>
+
+      <button id="btnStart"
+        onclick="startGame()"
+        class="animate-fadeInUp bg-gradient-to-r from-pink-400 to-violet-400 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-full text-lg sm:text-xl font-display font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+        style="animation-delay: 0.6s; opacity:0;">
+        Mulai
+      </button>
+    </div>
+
+    <div class="absolute top-20 left-10 w-20 sm:w-32 h-20 sm:h-32 bg-pink-200 rounded-full opacity-20 animate-float"></div>
+    <div class="absolute bottom-32 right-12 w-16 sm:w-24 h-16 sm:h-24 bg-violet-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+    <div class="absolute top-40 right-20 w-12 sm:w-16 h-12 sm:h-16 bg-rose-200 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+  </section>
+
+  <!-- ======================== SCENE 2: VISUAL NOVEL ======================== -->
+  <section id="scene-vn" class="scene">
+    <div class="w-full h-full flex flex-col items-center justify-end relative">
+
+      <!-- Character name tag -->
+      <div class="absolute top-3 left-3 sm:top-4 sm:left-4 md:left-8 z-20">
+        <div class="bg-gradient-to-r from-pink-400 to-violet-400 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-display font-bold text-xs sm:text-sm shadow-md">
+          Bima
+        </div>
+      </div>
+
+      <!-- Heart click button -->
+      <button id="heartBtn"
+        onclick="clickHeart(event)"
+        class="fixed top-3 right-3 sm:top-4 sm:right-4 md:right-8 z-20 text-2xl sm:text-3xl cursor-pointer bg-white/60 backdrop-blur-sm rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-md hover:bg-white/80 transition-all"
+        title="Klik untuk pesan semangat!">
+        ❤️
+      </button>
+
+      <!-- Dialog area -->
+      <div class="w-full max-w-3xl px-3 sm:px-4 pb-4 sm:pb-6 relative z-10">
+
+        <!-- Character (above dialog, behind it — ukuran diperbesar) -->
+        <img id="characterImg"
+          src="./image/normal.png"
+          alt="Character"
+          class="character-img w-60 sm:w-52 md:w-64 lg:w-72 object-contain absolute bottom-full left-3 sm:left-4 md:left-8 z-10"
+          style="margin-bottom: -40px;"
+        />
+
+        <!-- Dialog box -->
+        <div class="dialog-box rounded-2xl p-4 sm:p-6 shadow-xl relative z-20">
+          <div id="dialogText" class="text-gray-700 text-base sm:text-lg md:text-xl leading-relaxed min-h-[2.5rem] sm:min-h-[3rem] font-body"></div>
+          <div id="choicesContainer" class="mt-3 sm:mt-4 space-y-2 sm:space-y-3 hidden"></div>
+          <div id="nextBtnContainer" class="mt-3 sm:mt-4 flex justify-end">
+            <button id="btnNext"
+              onclick="nextDialog()"
+              class="next-btn bg-gradient-to-r from-pink-300 to-violet-300 text-white px-5 sm:px-6 py-2 sm:py-2.5 rounded-full font-display font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer hidden">
+              Next ▸
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== SCENE 3: ENDING (CLEAN PASTEL) ======================== -->
+  <section id="scene-ending" class="scene">
+    <div class="relative z-10 w-full min-h-full flex flex-col items-center justify-start px-4 py-6 sm:py-10 sm:justify-center">
+      <div class="text-center max-w-md mx-auto w-full">
+
+        <!-- Cake -->
+        <div class="text-5xl sm:text-7xl mb-3 sm:mb-5" style="animation: float 3s ease-in-out infinite;">🎂</div>
+
+        <!-- Title -->
+        <h1 id="endingTitle" class="font-display text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-400 to-violet-400 mb-2 sm:mb-3 opacity-0" style="transition: opacity 1s ease;">
+          Selamat Ulang Tahun!
+        </h1>
+
+        <!-- Subtitle -->
+        <p id="endingSubtitle" class="text-pink-400/80 text-sm sm:text-base mt-1 mb-4 sm:mb-6 opacity-0" style="transition: opacity 0.8s ease 0.5s;">
+          Dari temen yang kadang nyebelin, tapi peduli.
+        </p>
+
+        <!-- Character cewe.png -->
+        <div class="opacity-0 mb-4 sm:mb-6" id="endingCharContainer" style="transition: opacity 0.8s ease;">
+          <img id="endingCharImg"
+            src="./image/cewe.png"
+            alt="Character"
+            class="w-36 sm:w-48 mx-auto object-contain"
+            style="animation: float 3s ease-in-out infinite; filter: drop-shadow(0 12px 24px rgba(236,72,153,0.15));"
+          />
+        </div>
+
+        <!-- Message cards -->
+        <div id="endingMessages" class="space-y-2 sm:space-y-3 text-left">
+        </div>
+
+        <!-- Restart button -->
+        <button id="endingRestartBtn" onclick="restartGame()"
+          class="mt-5 sm:mt-8 mb-6 bg-gradient-to-r from-pink-400 to-violet-400 text-white px-7 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-display font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer opacity-0"
+          style="transition: opacity 0.8s ease;">
+          Ulangi
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== ROMANTIC MESSAGE POPUP ======================== -->
+  <div id="romanticPopup"
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border border-pink-200 max-w-[280px] sm:max-w-xs text-center pointer-events-none opacity-0 transition-all duration-500"
+    style="transform: translate(-50%, -50%) scale(0.8);">
+    <p id="romanticText" class="text-pink-500 font-display font-bold text-base sm:text-lg"></p>
+  </div>
+
+  <!-- ======================== SCRIPTS ======================== -->
+  <script src="script.js"></script>
+</body>
+</html>
